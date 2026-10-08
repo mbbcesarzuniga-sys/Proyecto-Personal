@@ -2,6 +2,7 @@ import { obtenerCatalogo } from '@/lib/catalogo'
 import { ProveedorCarrito } from '@/components/ProveedorCarrito'
 import { Encabezado } from '@/components/Encabezado'
 import { BarraPedido } from '@/components/BarraPedido'
+import { AvisoPreproduccion } from '@/components/AvisoPreproduccion'
 
 /**
  * Trae el catalogo una sola vez para todas las pantallas de la tienda, asi
@@ -12,6 +13,7 @@ export default async function LayoutTienda({ children }: { children: React.React
 
   return (
     <ProveedorCarrito productos={catalogo.productos} zonas={catalogo.zonas}>
+      <AvisoPreproduccion />
       <p className="aviso">
         {catalogo.negocio.horario} · {catalogo.negocio.direccion}
       </p>

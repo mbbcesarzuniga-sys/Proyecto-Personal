@@ -260,6 +260,48 @@ Recorre esta lista en el sitio publicado, no en tu maquina:
 - [ ] Borrar los pedidos de prueba:
       `delete from pedidos where cliente_nombre = 'Prueba';`
 
+## Un sitio de preproduccion para compartir y probar
+
+Conviene tener dos sitios: uno de pruebas que se comparte para revisar, y el real.
+
+**Como se distingue el sitio de pruebas.** No hace falta configurar nada en Vercel, Netlify
+ni Cloudflare: los tres marcan cada despliegue, y solo la rama principal cuenta como
+produccion. El codigo lo detecta en `src/lib/entorno.ts` y hace dos cosas:
+
+- Cierra el sitio a los buscadores: `robots.txt` responde `Disallow: /` y cada pagina lleva
+  `noindex, nofollow`. Sin esto, Google puede indexar el sitio de pruebas y un cliente
+  acabaria pidiendo ahi algo que nadie va a hornear.
+- Muestra una franja dorada arriba: *"Sitio de pruebas · Los pedidos que hagas aqui no se
+  preparan ni se cobran"*, para que quien reciba el enlace no se confunda.
+
+En un servidor propio esa deteccion no existe, asi que hay que poner `SITIO_ENTORNO` a mano.
+
+**Como montarlo en Vercel.** Crea una rama y despliegala:
+
+```bash
+git checkout -b preproduccion
+git push -u origin preproduccion
+```
+
+Vercel genera un despliegue aparte con su propia URL (algo como
+`proyecto-personal-git-preproduccion-tuusuario.vercel.app`). Ese enlace se comparte con
+quien vaya a probar: no necesitan cuenta ni permisos, basta con abrirlo.
+
+**Usa una base de datos distinta para pruebas.** Es la parte que mas se olvida. Si el sitio
+de pruebas apunta a la misma base que el real, los pedidos falsos se mezclan con los de
+verdad y la panaderia no sabe cuales preparar. Crea un segundo proyecto de Supabase
+(`el-horno-de-carazo-pruebas`), corre en el los mismos tres archivos SQL, y en Vercel carga
+*sus* llaves solo para el entorno Preview. Vercel permite elegir a que entornos aplica cada
+variable al agregarla.
+
+**Al terminar las pruebas**, limpia los pedidos falsos:
+
+```sql
+delete from pedidos where cliente_telefono = '80000000';
+```
+
+(Los renglones y la bitacora se borran solos: estan declarados `on delete cascade`.)
+
 ## Cada vez que haya un cambio
 
 Con Vercel, Netlify o Cloudflare, cada `git push` a la rama principal despliega solo. No hay

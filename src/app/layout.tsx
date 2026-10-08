@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
 import { Bricolage_Grotesque, Figtree } from 'next/font/google'
+import { esProduccion } from '@/lib/entorno'
 import './globals.css'
 
 /**
@@ -21,22 +22,35 @@ const cuerpo = Figtree({
   display: 'swap',
 })
 
-export const metadata: Metadata = {
-  title: {
-    default: 'El Horno de Carazo · Panaderia y reposteria en Jinotepe',
-    template: '%s · El Horno de Carazo',
-  },
-  description:
-    'Pan recien horneado, reposteria y tradicion de Carazo. Pedi en linea con entrega en Jinotepe, ' +
-    'Diriamba, San Marcos, Dolores, Santa Teresa y La Paz, o retira en la tienda.',
-  keywords: ['panaderia Jinotepe', 'reposteria Carazo', 'rosquillas Nicaragua', 'pasteles Jinotepe'],
-  openGraph: {
-    title: 'El Horno de Carazo',
-    description: 'Pan recien horneado, reposteria y tradicion de Carazo. Pedi en linea.',
-    locale: 'es_NI',
-    type: 'website',
-  },
-  robots: { index: true, follow: true },
+/**
+ * Es una funcion y no un objeto constante porque la directiva de indexado
+ * depende del entorno: en preproduccion el sitio se cierra a los buscadores.
+ */
+export function generateMetadata(): Metadata {
+  return {
+    title: {
+      default: 'El Horno de Carazo · Panaderia y reposteria en Jinotepe',
+      template: '%s · El Horno de Carazo',
+    },
+    description:
+      'Pan recien horneado, reposteria y tradicion de Carazo. Pedi en linea con entrega en ' +
+      'Jinotepe, Diriamba, San Marcos, Dolores, Santa Teresa y La Paz, o retira en la tienda.',
+    keywords: [
+      'panaderia Jinotepe',
+      'reposteria Carazo',
+      'rosquillas Nicaragua',
+      'pasteles Jinotepe',
+    ],
+    openGraph: {
+      title: 'El Horno de Carazo',
+      description: 'Pan recien horneado, reposteria y tradicion de Carazo. Pedi en linea.',
+      locale: 'es_NI',
+      type: 'website',
+    },
+    robots: esProduccion()
+      ? { index: true, follow: true }
+      : { index: false, follow: false, nocache: true },
+  }
 }
 
 export const viewport: Viewport = {

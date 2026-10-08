@@ -192,7 +192,16 @@ npm run verify      # tipos + pruebas + build, todo junto
 ## Despliegue
 
 Paso a paso en **[docs/DESPLIEGUE.md](docs/DESPLIEGUE.md)**: Vercel, Netlify, Cloudflare y
-un servidor propio con Docker, con lo que cuesta cada opcion.
+un servidor propio con Docker, con lo que cuesta cada opcion, y como montar un sitio de
+preproduccion para compartir.
+
+### Produccion y preproduccion
+
+El codigo sabe en que entorno corre (`src/lib/entorno.ts`). Vercel, Netlify y Cloudflare lo
+marcan solos y solo la rama principal cuenta como produccion; en un servidor propio se pone
+a mano con `SITIO_ENTORNO`. Fuera de produccion el sitio se cierra a los buscadores
+(`robots.txt` con `Disallow: /` y `noindex` en cada pagina) y muestra una franja que avisa
+que los pedidos no son reales.
 
 ---
 
