@@ -1,0 +1,21 @@
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+next-env.d.ts
+
+# Entorno: NUNCA subir llaves reales
+.env
+.env.local
+.env*.local
+.env.production
+
+# Supabase CLI
+supabase/.branches
+supabase/.temp
+
+.DS_Store
+*.log
+npm-debug.log*
+coverage/
